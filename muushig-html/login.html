@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Нэвтрэх — Muushig Web</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<main class="page">
+  <section class="card">
+    <h1>Нэвтрэх</h1>
+    <form id="login-form" class="grid">
+      <div id="error-box"></div>
+      <input class="input" id="email" placeholder="Email" type="email" required>
+      <input class="input" id="password" placeholder="Password" type="password" required>
+      <button class="button" type="submit">Нэвтрэх</button>
+    </form>
+    <a class="button secondary" href="index.html">Буцах</a>
+  </section>
+</main>
+<script type="module">
+  import { signIn } from './js/auth.js';
+
+  const form = document.getElementById('login-form');
+  const errorBox = document.getElementById('error-box');
+
+  function showError(message) {
+    errorBox.innerHTML = message ? `<div class="error">${message}</div>` : '';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showError('');
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const res = await signIn(email, password);
+    if (res.error) {
+      showError(res.error.message);
+    } else {
+      location.href = 'lobby.html';
+    }
+  });
+</script>
+</body>
+</html>
