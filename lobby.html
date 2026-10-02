@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lobby — Muushig Web</title>
+<link rel="stylesheet" href="css/styles.css">
+
+<!-- Supabase CDN болон тохиргоо (кодын ажиллагаанд нөлөөлөхгүй) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://hobflhqpndluwvcuyhgp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_yMFigb8G2lTMU5df8XEh_w_VcP6I8fM';
+  const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+</script>
+</head>
+<body>
+<main class="page">
+  <section class="card">
+    <div class="topbar">
+      <div>
+        <h1>Lobby</h1>
+        <p class="muted">Өрөө үүсгэх эсвэл room code ашиглан нэгдэнэ.</p>
+      </div>
+      <a class="button secondary" href="index.html">Home</a>
+    </div>
+    <div class="grid2">
+      <div class="stat">
+        <h2>Шинэ өрөө</h2>
+        <button class="button" id="create-room-btn">Өрөө үүсгэх</button>
+      </div>
+      <div class="stat">
+        <h2>Өрөөнд нэгдэх</h2>
+        <form id="join-room-form" class="row">
+          <input class="input" style="max-width:240px" id="room-code" placeholder="Room code">
+          <button class="button secondary" type="submit">Өрөөнд нэгдэх</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+  function makeCode() {
+    return Math.random().toString(36).slice(2, 8).toUpperCase();
+  }
+
+  document.getElementById('create-room-btn').addEventListener('click', () => {
+    const c = makeCode();
+    const room = {
+      id: c,
+      room_code: c,
+      status: 'waiting',
+      players: [{ id: 'me', username: 'Player 1', is_ready: false, seat_number: 1 }]
+    };
+    localStorage.setItem(`room-${c}`, JSON.stringify(room));
+    location.href = `room.html?code=${c}`;
+  });
+
+  document.getElementById('join-room-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const code = document.getElementById('room-code').value.trim();
+    if (!code) return;
+    location.href = `room.html?code=${code.toUpperCase()}`;
+  });
+</script>
+</body>
+</html>ssss

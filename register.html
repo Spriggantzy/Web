@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бүртгэл — Muushig Web</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<main class="page">
+  <section class="card">
+    <h1>Бүртгэл</h1>
+    <form id="register-form" class="grid">
+      <div id="error-box"></div>
+      <input class="input" id="username" placeholder="Username" required>
+      <input class="input" id="email" placeholder="Email" type="email" required>
+      <input class="input" id="password" placeholder="Password" type="password" required>
+      <button class="button" type="submit">Бүртгүүлэх</button>
+    </form>
+    <a class="button secondary" href="index.html">Буцах</a>
+  </section>
+</main>
+<script type="module">
+  import { signUp } from './js/auth.js';
+
+  const form = document.getElementById('register-form');
+  const errorBox = document.getElementById('error-box');
+
+  function showMessage(message, isError) {
+    errorBox.innerHTML = message ? `<div class="${isError ? 'error' : 'success'}">${message}</div>` : '';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showMessage('', false);
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const res = await signUp(email, password, username);
+    if (res.error) {
+      showMessage(res.error.message, true);
+    } else {
+      showMessage('Бүртгэл үүссэн. Email баталгаажуулалт шаардлагатай байж болно.', false);
+    }
+  });
+</script>
+</body>
+</html>

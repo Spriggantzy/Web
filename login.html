@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Нэвтрэх — Muushig Web</title>
+<link rel="stylesheet" href="css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<main class="page">
+  <section class="card">
+    <h1>Нэвтрэх</h1>
+    <form id="login-form" class="grid">
+      <div id="error-box"></div>
+      <input class="input" id="email" placeholder="Email" type="email" required>
+      <input class="input" id="password" placeholder="Password" type="password" required>
+      <button class="button" type="submit">Нэвтрэх</button>
+    </form>
+    <pre id="debug" class="message" style="white-space:pre-wrap"></pre>
+    <a class="button secondary" href="index.html">Буцах</a>
+  </section>
+</main>
+<script>
+  const URL_ = 'https://hobflhqpndluwvcuyhgp.supabase.co';
+  const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvYmZsaHFwbmRsdXd2Y3V5aGdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5Njg4MzQsImV4cCI6MjA5NjU0NDgzNH0.4WoHu_iRsYPuLB4HskAhiUUaxBFXNgLtQs1GxztBzj4';
+
+  const debug = document.getElementById('debug');
+  const log = (t) => { debug.textContent += t + '\n'; console.log(t); };
+
+  log('supabase library: ' + (window.supabase ? 'ачаалагдсан' : 'АЧААЛАГДААГҮЙ (CDN хаагдсан байж магадгүй)'));
+  log('URL: ' + URL_);
+
+  const sb = window.supabase ? window.supabase.createClient(URL_, KEY) : null;
+
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    debug.textContent = '';
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      const r = await fetch(URL_ + '/auth/v1/health', { headers: { apikey: KEY } });
+      log('health: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 120));
+    } catch (err) {
+      log('health АЛДАА: ' + err.name + ' - ' + err.message);
+    }
+
+    if (!sb) return;
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      log('login алдаа: [' + (error.status || '-') + '] ' + error.name + ' - ' + error.message);
+      document.getElementById('error-box').innerHTML = '<div class="error">' + error.message + '</div>';
+    } else {
+      log('Амжилттай!');
+      location.href = 'lobby.html';
+    }
+  });
+</script>
+</body>
+</html>
